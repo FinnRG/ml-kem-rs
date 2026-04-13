@@ -147,6 +147,9 @@ jobs:
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
+        python-version:
+          - '3.13t'
+          - '3.14t'
         platform:
           - runner: ubuntu-22.04
             target: x86_64
@@ -161,18 +164,18 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.13t'
+          python-version: ${{ matrix.python-version }}
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist -i python3.13t --no-default-features
+          args: --release --out dist -i python${{ matrix.python-version }} --no-default-features
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: ${{ matrix.platform.manylinux }}
       - name: Upload wheels
         uses: actions/upload-artifact@v6
         with:
-          name: wheels-free-threaded-${{ matrix.platform.runner }}-${{ matrix.platform.target }}
+          name: wheels-free-threaded-${{ matrix.python-version }}-${{ matrix.platform.runner }}-${{ matrix.platform.target }}
           path: dist
 
   test:
