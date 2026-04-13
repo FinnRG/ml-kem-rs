@@ -1,5 +1,3 @@
-use std::ffi::CString;
-
 use ml_kem::{
     Kem, MlKem768,
     kem::{KeyInit, TryKeyInit},
